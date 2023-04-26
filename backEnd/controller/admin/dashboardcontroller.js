@@ -156,6 +156,25 @@ const addService = (req, res) => {
     }
 };
 
+ const approveWorker = async(req, res) => {
+    try {
+        console.log(req.body)
+        const {worker,button} = req.body
+        if(button==="approve"){
+            const status = await workerdb.findOneAndUpdate({_id: worker}, {approved: true})
+            console.log(status)
+            res.status(200).json(status)
+        }
+        if(button==="cancel"){
+            const status = await workerdb.findOneAndUpdate({_id: worker}, {approved: false})
+            console.log(status)
+            res.status(200).json(status)
+        }
+    } catch (error) {
+        res.status(500).json({ error: "internal server error" });
+    }
+ };
+
 const deleteService = async (req, res) => {
     try {
         console.log("object");
@@ -178,4 +197,4 @@ const deleteService = async (req, res) => {
 }
 
 
-export { dashBoard, userList, blockUser, unblockUser, addService, deleteService ,dashBoarduserList,workerList };
+export { dashBoard, userList, blockUser, unblockUser, addService, deleteService ,dashBoarduserList,workerList,approveWorker };

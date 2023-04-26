@@ -12,6 +12,7 @@ import {
     dashBoarduserList,
     ProfitData,
     workerList,
+    approveWorker,
 } from "../controller/admin/dashboardcontroller.js";
 import { addSubscription, getSubscriptions } from "../controller/user/servicecontroller.js";
 
@@ -23,6 +24,7 @@ router.post("/adminlogin", postAdmin);
 router.get("/dashboard", dashBoard);
 router.get("/userlist", userList);
 router.get("/workerslist",workerList)
+router.post("/approveworker", approveWorker)
 
 router.post("/blockuser", blockUser);
 router.post("/unblockuser", unblockUser);

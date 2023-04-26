@@ -11,6 +11,7 @@ import {
     addServiceByuser,
     cancelRequest,
     checkServiceAdded,
+    checksubscriptionExpired,
     deleteMyservice,
     getAcceptStatus,
     getAllrequests,
@@ -64,6 +65,7 @@ router.get("/workerlist", getWorkerList);
 router.delete("/deleteMyservice", deleteMyservice);
 
 router.post("/takesubscription", takeSubscription);
+router.get("/checksubscriptionExpired",verifyToken ,checksubscriptionExpired)
 router.post("/verfypayment", verifyPayment);
 
 router.post("/requestWorker", requestService);

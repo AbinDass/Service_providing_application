@@ -87,6 +87,25 @@ export const takeSubscription = async (req, res) => {
         res.status(500).json({ error: "internal server error" });
     }
 };
+//check subscription expired 
+export const checksubscriptionExpired = async (req, res) =>{
+    try {
+        const {userId} = req.query
+        const user = await userdb.findOne({_id: userId })
+        if(user.subscriptionexpirydate === Date.now()){
+            await subscriptiondb.findOneAndUpdate({"users.userid": userId},{
+                 $pull: { users: { userid: userId } } 
+            })
+            await userdb.findOneAndUpdate(
+                { _id: userId },
+                { role: "user", subscriptiondate: null, subscriptionexpirydate: null }
+            );
+            await workerdb.findOneAndUpdate({user: userId}, {approved: false})
+        }
+    } catch (error) {
+        res.status(500).json({ error:"internal server error" });
+    }
+}
 //verify and generate razorpay instance
 async function verifyRazorpayPayment(paymentId, orderId, razorpaySignature) {
     try {
@@ -209,7 +228,7 @@ export const getWorkerList = async (req, res) => {
         const title = req.query.title;
         const district = req.query.district;
         console.log(district,'----')
-        const workers = await workerdb.find({ servicetitle: title , distric:district}).populate("user").sort({ createdAt: -1 });
+        const workers = await workerdb.find({ servicetitle: title , distric:district, approved: true}).populate("user").sort({ createdAt: -1 });
         console.log(workers)
         res.status(200).json(workers);
     } catch (err) {

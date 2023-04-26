@@ -83,21 +83,31 @@ const postSignup = async (req, res) => {
 };
 
 const googleAuth = async (req, res) => {
+    console.log('hii')
     try {
-        const { email } = req.body.datas.data.email;
+        console.log(req.body)
+        const { email } = req.body.datas.data;
+        
         const user = await userdb.findOne({ email: email });
-        if (user) {
+        console.log(email)
+        console.log(user)
+        if (user !== null) {
+            console.log('object')
             const token = signuptoken();
-            res.status(200).json({ user: user, success: true, token });
+            res.status(200).json({ user, success: true, token });
         } else {
-            const { given_name, family_name, email } = req.body.datas.data;
-            const newUser = new userdb({
+            const token = signuptoken();
+            const { given_name, family_name, email, picture } = req.body.datas.data;
+            const user = new userdb({
                 firstname: given_name,
                 secondname: family_name,
                 email: email,
+                profilepicture: picture
             });
-            newUser.save();
-            res.status(201).json({ user: newUser, success: true });
+            user.save();
+            console.log(newUser)
+
+            res.status(201).json({ user, success: true ,token});
         }
     } catch (err) {
         res.status(500).json({ error: "internal server error" });
